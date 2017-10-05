@@ -8,6 +8,8 @@
 
 import UIKit
 
+// 1: Once you decide to change the colour you'll have to rename everything to
+// GreenNavigationBar :) Sometime's it's not worth the trouble!
 class PurpleNavigationBar: UINavigationBar {
 
    

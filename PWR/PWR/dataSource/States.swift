@@ -8,6 +8,8 @@
 
 import Foundation
 
+// 3: You can get rid of all of this if you read my comments at the bottom of the State.swift file
+// But you can probably reuse the stateDictionary, so don't delete it just yet :)
 struct States {
     private init(){}
     static let shared = States()

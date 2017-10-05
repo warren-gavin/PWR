@@ -10,17 +10,27 @@ import UIKit
 
 class StateCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UISearchBarDelegate {
 
+    // 0: Private?
+    // 1: You can initialise this immediately if you like
+    //    private let parserDelegate = ParserDelegate()
     var parserDelegate: ParserDelegate!
+
+    // 0: Probably not needed any more, depending on what you decide to do after reading the comments in State.swift
     var stateData = States.shared.states
+    
     var selectedState: State!
     var filteredData: [String] = [] {
         didSet {
             print(filteredData.count)
+            // 1: Consistency thingy, there is always a space after the ':'
             self.collectionView?.reloadSections(IndexSet(integer:1))
         }
     }
     
     var senatorStateMap: [String: [Senator]]!
+    // 0: No need to specify as Bool, you can just write
+    //
+    //    var isFiltering = false
     var isFiltering: Bool = false
     
     override func viewDidLoad() {
@@ -31,13 +41,14 @@ class StateCollectionViewController: UICollectionViewController, UICollectionVie
     }
     
     // MARK: Helper Functions
-    
+    // 0: Should this be a private function?
     func setUpCollectionView(){
         self.collectionView?.delegate = self
         self.collectionView?.dataSource = self
         self.view.backgroundColor = UIColor.white
     }
     
+    // 0: Should this be a private function?
     func filterStatesForSearchText(_ searchText: String) {
         self.filteredData = self.stateData.filter{$0.lowercased().hasPrefix(searchText.lowercased())}
     }
@@ -65,6 +76,7 @@ extension StateCollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch section {
+        // 1: case 0 is the same as default. There's no need for it.
         case 0:
             return 0
         case 1:
@@ -80,10 +92,12 @@ extension StateCollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // 1: You can use a guard instead of an if and it will reduce your indentation
         if indexPath.section == 1 {
             let cell = self.collectionView?.dequeueReusableCell(withReuseIdentifier: "state", for: indexPath) as! StateCollectionViewCell
             
             print("is filtering is set to : \(isFiltering)")
+            // 0: Why not just use a simple if {} else {}?
             switch isFiltering {
             case true:
                 cell.stateLabel.text = self.filteredData[indexPath.row]
@@ -104,6 +118,12 @@ extension StateCollectionViewController {
             }
             return UICollectionReusableView()
         } else {
+            // 0: There is a CGRect called 'zero' that's predefined as all zeroes. You can use that
+            // instead
+            //
+            // Also, no need to assign then return, you can do it all on one line
+            //
+            //    return UICollectionReusableView(frame: .zero)
             let reusableView = UICollectionReusableView(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
             return reusableView
         }
@@ -135,6 +155,13 @@ extension StateCollectionViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // 0: You can do this even quicker just by checking the destination VC, you only need to check
+        // the segue identifier if you might have multiple segues that all open a StateProfileViewController
+        //
+        //        if let destination = segue.destination as? StateProfileViewController {
+        //            destination.state = selectedState
+        //        }
+        
         if segue.identifier == "goToStateProfile" {
             let destinationvc = segue.destination as! StateProfileViewController
             destinationvc.state = self.selectedState
@@ -146,6 +173,9 @@ extension StateCollectionViewController {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
+        // 0: Can be done in one line
+        //
+        //    isFiltering = (searchText.characters.count != 0)
         if searchText.characters.count == 0 {
             self.isFiltering = false
         } else {
